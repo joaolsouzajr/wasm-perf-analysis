@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <title>WASM & OpenCV - MyImageProc</title>
+  <style type="text/css">
+    canvas {
+      border: 1px solid black;
+    }
+  </style>
+</head>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+<body onload="init()">
+  <section id="calc">
+    <p>
+      <canvas id="lena" width="512" height="412">
+      </canvas>
+      <canvas id="lena1" width="512" height="412">
+      </canvas>
+      <canvas id="lena2" width="512" height="412">
+      </canvas>
+    </p>
+    <input type="button" name="plusbutton" , id="plusbutton" value="+">
+    <input type="button" name="minusbutton" , id="minusbutton" value="-">
+  </section>
+
+  <script type="text/javascript">
+    const plusbutton = document.getElementById("plusbutton");
+    const minusbutton = document.getElementById("minusbutton");
+
+    function draw() {
+      var canvas = document.getElementById('lena');
+      if (canvas.getContext) {
+        var ctx = canvas.getContext('2d');
+
+        ctx.fillStyle = "rgb(200,0,0)";
+        ctx.fillRect(10, 10, 55, 50);
+
+        ctx.fillStyle = "rgba(0, 0, 200, 0.5)";
+        ctx.fillRect(30, 30, 55, 50);
+      }
+    }
+
+    function drawSmile() {
+      var canvas = document.getElementById('lena');
+      if (canvas.getContext) {
+        var ctx = canvas.getContext("2d");
+        ctx.beginPath();
+        ctx.arc(75, 75, 50, 0, Math.PI * 2, true); // Círculo exterior
+        ctx.moveTo(110, 75);
+        ctx.arc(75, 75, 35, 0, Math.PI, false);  // Boca (sentido horário)
+        ctx.moveTo(65, 65);
+        ctx.arc(60, 65, 5, 0, Math.PI * 2, true);  // Olho esquerdo
+        ctx.moveTo(95, 65);
+        ctx.arc(90, 65, 5, 0, Math.PI * 2, true);  // Olho direito
+        ctx.stroke();
+      }
+    }
+
+    function drawLines() {
+      var canvas = document.getElementById('lena');
+      if (canvas.getContext) {
+        var ctx = canvas.getContext('2d');
+
+        // Filled triangle
+        ctx.beginPath();
+        ctx.moveTo(25, 25);
+        ctx.lineTo(105, 25);
+        ctx.lineTo(25, 105);
+        ctx.fill();
+
+        // Stroked triangle
+        ctx.beginPath();
+        ctx.moveTo(125, 125);
+        ctx.lineTo(125, 45);
+        ctx.lineTo(45, 125);
+        ctx.closePath();
+        ctx.stroke();
+      }
+    }
+
+    function drawBezier() {
+      var canvas = document.getElementById('lena');
+      if (canvas.getContext) {
+        var ctx = canvas.getContext('2d');
+
+        // Exemplo de curvas de Bézier quadráticas
+        ctx.beginPath();
+        ctx.moveTo(75, 25);
+        ctx.quadraticCurveTo(25, 25, 25, 62.5);
+        ctx.quadraticCurveTo(25, 100, 50, 100);
+        ctx.quadraticCurveTo(50, 120, 30, 125);
+        ctx.quadraticCurveTo(60, 120, 65, 100);
+        ctx.quadraticCurveTo(125, 100, 125, 62.5);
+        ctx.quadraticCurveTo(125, 25, 75, 25);
+        ctx.stroke();
+      }
+    }
+
+
+    function drawcores() {
+        var ctx = document.getElementById('lena').getContext('2d');
+        for (var i = 0; i < 6; i++) {
+          for (var j = 0; j < 6; j++) {
+            ctx.fillStyle = 'rgb(' + Math.floor(255 - 42.5 * i) + ',' +
+              Math.floor(255 - 42.5 * j) + ',0)';
+            ctx.fillRect(j * 25, i * 25, 25, 25);
+          }
+        }
+      }
+
+
+    const init = () => {
+      console.log("WebAssembly is up!");
+      drawImage();
+      // mycalc = new Module.MyCalc();    function drawImage()
+    {
+      var canvas = document.getElementById('lena');
+      if (canvas.getContext)
+      {
+        var ctx = canvas.getContext('2d');
+        var img = new Image();
+        img.src = 'images/lena.png';
+        img.onload = function() {
+            // create pattern
+            var ptrn = ctx.createPattern(img, 'repeat');
+            ctx.fillStyle = ptrn;
+            ctx.fillRect(0, 0, 512, 512);
+        }
+      }
+    }
+
+      // plusbutton.addEventListener('click', calcPlusEvent);
+      // minusbutton.addEventListener('click', calcMinusEvent);
+      // divbutton.addEventListener('click', calcDivEvent);
+      // multbutton.addEventListener('click', calcMultEvent);
+      // rangebutton.addEventListener('click', calcRangeEvent);
+    };
+  </script>
+</body>
+
+</html>

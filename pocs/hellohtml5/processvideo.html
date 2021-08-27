@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <title>WASM & OpenCV - MyImageProc</title>
+  <style type="text/css">
+    canvas {
+      border: 1px solid black;
+    }
+
+    .invisible {
+      display: none;
+    }
+
+    .info {
+      background-color: aqua;
+    }
+
+    .error {
+      background-color: red;
+      color: white;
+    }
+  </style>
+</head>
+
+<body>
+  <section id="imgproc">
+    <div id="message"></div>
+    <input id="inputFile" type="file" accept="video/mp4" />
+  </section>
+  <section id="imgproc_video">
+    <p>
+      <div>
+        <video id="video" width="483" height="272" controls autoplay>Your browser does not support the video
+          tag.</video>
+      </div>
+      <canvas id="videocam" width="483" height="272">
+      </canvas>
+    </p>
+  </section>
+
+  <script type="text/javascript">
+    let streaming = false;
+    const video = document.getElementById("video");
+    const videocam = document.getElementById("videocam");
+    var frameIndex = 0;
+    var loop = null;
+    var frameRate = 24;
+
+    function getCurrentVideoFrame() {
+      let curTime = video.currentTime;
+      frameIndex = Math.floor(curTime * frameRate);
+      console.log("Frame index  " + frameIndex);
+    }
+
+    const playSelectedFile = function (event) {
+      let file = this.files[0]
+      let type = file.type
+      let videoNode = document.getElementById('video')
+      let canPlay = videoNode.canPlayType(type)
+      if (canPlay === '') canPlay = 'no'
+      let message = 'Can play type "' + type + '": ' + canPlay
+      let isError = canPlay === 'no'
+      showMessage(message, isError)
+      if (isError) {
+        return
+      }
+      let fileURL = URL.createObjectURL(file)
+      videoNode.src = fileURL
+    }
+
+    const showMessage = (message, isError) => {
+      var element = document.getElementById('message')
+      element.innerHTML = message
+      element.className = isError ? 'error' : 'info'
+    }
+
+    function push() {
+      if (!video.paused && !video.ended) {
+        video.pause();
+        window.clearInterval(loop);
+      } else {
+        video.play();
+        frameIndex = 0;
+        loop = setInterval(processFrames, 33);
+      }
+      if (video.ended) {
+        frameIndex = 0;
+      }
+    }
+
+
+    function processFrames() {
+      videocam.drawImage(video, 0, 0);
+      console.log("Frame index  " + frameIndex);
+      frameIndex++;
+    }
+
+
+    const init = () => {
+      console.log("Process  Video HTML5!");
+      let inputFile = document.getElementById('inputFile')
+      inputFile.addEventListener('change', playSelectedFile, false);
+      video.addEventListener('canplay', function () {
+        loop = setInterval(function () {
+          getCurrentVideoFrame();
+        }, (1000 / frameRate));
+      }, false);
+    };
+
+    window.addEventListener("load", init, false);
+
+  </script>
+</body>'
+
+</html>

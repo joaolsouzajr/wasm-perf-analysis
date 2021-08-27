@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <title>PoC WASM - MyApp</title>
+</head>
+
+<body>
+  <section id="calc">
+    <p><input type="number" name="valueA" id="valueA" /></p>
+    <p><input type="number" name="valueB" id="valueB" /></p>
+    <p><input type="number" name="result" id="result" /></p>
+    <input type="button" name="plusbutton" , id="plusbutton" value="+">
+    <input type="button" name="minusbutton" , id="minusbutton" value="-">
+    <input type="button" name="divbutton" , id="divbutton" value="/">
+    <input type="button" name="multbutton" , id="multbutton" value="*">
+    <p><input type="text" name="resultRange" id="resultRange" /></p>
+    <input type="button" name="rangebutton" , id="rangebutton" value="Range">
+  </section>
+
+  <script type="text/javascript">
+    const plusbutton = document.getElementById("plusbutton");
+    const minusbutton = document.getElementById("minusbutton");
+    const divbutton = document.getElementById("divbutton");
+    const multbutton = document.getElementById("multbutton");
+    const rangebutton = document.getElementById("rangebutton");
+    const result = document.getElementById("result");
+    const valueA = document.getElementById("valueA");
+    const valueB = document.getElementById("valueB");
+    const resultRange = document.getElementById("resultRange");
+
+    var mycalc = undefined;
+
+    const calcPlusEvent = (event) => {
+      result.value = mycalc.plus(parseInt(valueA.value), parseInt(valueB.value));
+    };
+
+    const calcMinusEvent = (event) => {
+      result.value = mycalc.minus(parseInt(valueA.value), parseInt(valueB.value));
+    };
+
+    const calcDivEvent = (event) => {
+      result.value = mycalc.div(parseInt(valueA.value), parseInt(valueB.value));
+    };
+
+    const calcMultEvent = (event) => {
+      result.value = mycalc.mult(parseInt(valueA.value), parseInt(valueB.value));
+    };
+
+    const calcRangeEvent = (event) => {
+      var ucharArray = new Uint8Array(10);
+      var heapBytes = _arrayToHeap(ucharArray);
+      mycalc.range(heapBytes.byteOffset, 10);
+      let resultStr = "";
+      heapBytes.forEach(element => {
+        resultStr += "," + element;
+      });
+      resultRange.value = resultStr;
+      _freeArray(heapBytes);
+    };
+
+    function _freeArray(heapBytes) {
+      Module._free(heapBytes.byteOffset);
+    }
+    function _arrayToHeap(typedArray) {
+      var numBytes = typedArray.length * typedArray.BYTES_PER_ELEMENT;
+      var ptr = Module._malloc(numBytes);
+      heapBytes = Module.HEAPU8.subarray(ptr, ptr + numBytes);
+      heapBytes.set(typedArray);
+      return heapBytes;
+    }
+
+    const init = () => {
+      console.log("WebAssembly is up!");
+      mycalc = new Module.MyCalc();
+      plusbutton.addEventListener('click', calcPlusEvent);
+      minusbutton.addEventListener('click', calcMinusEvent);
+      divbutton.addEventListener('click', calcDivEvent);
+      multbutton.addEventListener('click', calcMultEvent);
+      rangebutton.addEventListener('click', calcRangeEvent);
+    };
+
+    var Module = {
+      preRun: [],
+      postRun: [init],
+      print: [],
+      printErr: function (text) {
+        if (arguments.length > 1) text = Array.prototype.slice.call(arguments).join(' ');
+        console.error(text);
+      },
+    };
+  </script>
+  <script async type="text/javascript" src="myapp.js"></script>
+</body>'
+
+</html>

@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <title>TCCWASM - Exemplo 3</title>
+</head>
+
+<body>
+  <section id="calc">
+    <p>
+      <label for="valueA">A:</label><br>
+      <input type="number" name="valueA" id="valueA" />
+    </p>
+    <p>
+      <label for="valueA">B:</label><br>
+      <input type="number" name="valueB" id="valueB" />
+    </p>
+    <p>
+      <label for="valueA">Resultado:</label><br>
+      <input type="number" name="result" id="result" />
+    </p>
+    <input type="button" name="plusbutton" id="plusbutton" value="+">
+    <input type="button" name="minusbutton" id="minusbutton" value="-">
+  </section>
+  <script type="text/javascript">
+    const plusbutton = document.getElementById("plusbutton");
+    const minusbutton = document.getElementById("minusbutton");
+    const result = document.getElementById("result");
+    const valueA = document.getElementById("valueA");
+    const valueB = document.getElementById("valueB");
+
+    var mycalc = undefined;
+
+    const calcPlusEvent = (event) => {
+      result.value = mycalc.plus(
+        parseInt(valueA.value), parseInt(valueB.value));
+    };
+
+    const calcMinusEvent = (event) => {
+      result.value = mycalc.minus(
+        parseInt(valueA.value), parseInt(valueB.value));
+    };
+
+    const init = () => {
+      console.log("WebAssembly is up!");
+      mycalc = new Module.MyCalc();
+      plusbutton.addEventListener('click', calcPlusEvent);
+      minusbutton.addEventListener('click', calcMinusEvent);
+    };
+
+    var Module = {
+      preRun: [],
+      postRun: [init],
+      print: function (text) {
+        if (arguments.length > 1) {
+          text = Array.prototype.slice.call(arguments).join(' ');
+        }
+        console.log(text);
+      },
+      printErr: function (text) {
+        if (arguments.length > 1) {
+          text = Array.prototype.slice.call(arguments).join(' ');
+        }
+        console.error(text);
+      },
+    };
+  </script>
+  <script async type="text/javascript" src="example3.js"></script>
+</body>'
+
+</html>

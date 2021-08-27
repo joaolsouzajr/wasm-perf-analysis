@@ -1,0 +1,36 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <script>
+    async function createWebAssembly(path, importObject) {
+      const result = await window.fetch(path);
+      const bytes = await result.arrayBuffer();
+      return WebAssembly.instantiate(bytes, importObject);
+    }
+
+    const memory = new WebAssembly.Memory({ initial: 256, maximum: 256 });
+    let exports = null;
+
+    async function init() {
+      const env = {
+        'abortStackOverflow': () => { throw new Error('overflow'); },
+        'table': new WebAssembly.Table({ initial: 0, maximum: 0, element: 'anyfunc' }),
+        '__table_base': 0,
+        'memory': memory,
+        '__memory_base': 1024,
+        'STACKTOP': 0,
+        'STACK_MAX': memory.buffer.byteLength,
+      };
+      const importObject = { env };
+
+      const wa = await createWebAssembly('example2.wasm', importObject);
+      exports = wa.instance.exports;
+      console.info('got exports', exports);
+    }
+    init();
+  </script>
+</head>
+
+<body>
+</body>

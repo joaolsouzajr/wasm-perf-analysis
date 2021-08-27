@@ -1,0 +1,12 @@
+canvas {
+  border: 1px solid black;
+}
+
+.info {
+  background-color: aqua;
+}
+
+.error {
+  background-color: red;
+  color: white;
+}

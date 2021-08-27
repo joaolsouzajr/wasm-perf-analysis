@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <title>File API Test</title>
+</head>
+
+<body>
+  <section id="databox">
+    <form onsubmit="download(this['name'].value, this['text'].value)">
+      <input type="text" name="name" value="test.txt">
+      <textarea name="text"></textarea>
+      <input type="submit" value="Download">
+    </form>
+  </section>
+  <script type="text/javascript">
+    function download(filename, text) {
+      var element = document.createElement('a');
+      //element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
+      element.setAttribute('download', filename);
+      var t = new Blob([text], {type : 'application/csv'});
+      element.style.display = 'none';
+      element.href=URL.createObjectURL(t)
+      document.body.appendChild(element);
+      element.click();
+      document.body.removeChild(element);
+    }
+  </script>
+</body>
+
+</html>
