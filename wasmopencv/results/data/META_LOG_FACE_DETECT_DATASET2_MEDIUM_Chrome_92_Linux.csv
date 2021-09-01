@@ -1,0 +1,2 @@
+workload,dataset,resolution,system,total_frames,total_frames_processeds,test_total_time_ms,log_file
+FACE_DETECT,DATASET2,MEDIUM,Chrome_92_Linux,101,101,33427.40000000596,LOG_FACE_DETECT_DATASET2_MEDIUM_Chrome_92_Linux.csv

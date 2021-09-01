@@ -52,7 +52,7 @@ namespace dzapp {
             cout << "Resolution to scale not supported" << endl;
             return;
         }
-        cout << datasetName << "WASM - Tests" << endl;
+        cout << datasetName << " WASM - Tests" << endl;
     }
 
     void getFilenames(const string &dirName, vector<string> &fileNames) {
@@ -116,10 +116,9 @@ namespace dzapp {
         std::sort(fileNames.begin(), fileNames.end());
 
         for (int i = 0; i < fileNames.size(); i++) {
-            cout << fileNames.at(i) << endl;
             my_images.push_back(cv::imread(dzapp::datasetPath + "/" + fileNames.at(i)));
         }
-
+        frameCount = my_images.size();
         auto start = high_resolution_clock::now();
         for (int i = 0; i < my_images.size(); i++) {
             //cout << fileNames.at(i) << endl;
@@ -136,8 +135,9 @@ namespace dzapp {
                 // Detect faces with log time
                 faceDetect.faceDetectWithLog(matWSrc);
             }
+            frameIndex++;
 
-            imshow("Test", matWSrc.matImg);
+            //imshow("Test", matWSrc.matImg);
 
             auto t1 = high_resolution_clock::now();
             faceDetect.logs[i].totalTime = duration_cast<milliseconds>(t1 - t0).count();
@@ -145,13 +145,14 @@ namespace dzapp {
 
             matWSrc.~MatAdapter();
 
+
         }
         auto end = high_resolution_clock::now();
         totalTime = duration_cast<milliseconds>(end - start).count();
         report(faceDetect);
         // Register total time for process and display image.
-        waitKey(0);
-        destroyAllWindows();
+//        waitKey(0);
+//        destroyAllWindows();
     }
 
 

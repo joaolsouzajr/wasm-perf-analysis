@@ -1,2 +1,2 @@
 workload,dataset,resolution,system,total_frames,total_frames_processeds,test_total_time_ms,log_file
-FACE_DETECT,DATASET1,SMALL,LINUX,0,0,4531,LOG_FACE_DETECT_DATASET1_SMALL_LINUX.csv
+FACE_DETECT,DATASET3,LARGE,LINUX,246,246,40757,LOG_FACE_DETECT_DATASET3_LARGE_LINUX.csv

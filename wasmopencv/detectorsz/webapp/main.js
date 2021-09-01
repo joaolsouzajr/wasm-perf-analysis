@@ -3,7 +3,7 @@
 const width = document.getElementById('width').textContent;
 const height = document.getElementById('height').textContent;
 const workloadName = "FACE_DETECT";
-let totalFramesProcessed = 0;
+let totalFrames = 0;
 let totalFramesProcessed = 0;
 let datasetName = null;
 let totalTime = null;
@@ -24,8 +24,8 @@ const processFiles = function (event) {
     let reader = new FileReader();
     reader.onload = function (readerEvent) {
       let listItem = document.createElement("li");
-      listItem.innerHTML = "<img src='" + readerEvent.target.result + "' />" +
-        "<canvas id='" + i + "' width='" + width + "'+ height='" + height + "'>";
+      listItem.innerHTML = "<img src='" + readerEvent.target.result + "' width='" + width + "'+ height='" + height + "'/>" +
+        "<canvas id='" + i + "' width='" + width + "'+ height='" + height + "' />";
       imageList.append(listItem);
     }
     reader.onloadend = function (event) {
@@ -42,25 +42,27 @@ const processImages = function () {
   faceDetect = new Module.FaceDetect("DATASET1");
   let allImgElements = document.getElementsByTagName("img");
   totalFramesProcessed = 0;
+  totalFrames = allImgElements.length;
   totalTime = performance.now();
+  let control = totalFrames - 1;
   for (let i = 0; i < allImgElements.length; i++) {
-    console.log(i);
+    //console.log(i);
     let t0 = performance.now();
 
     let src = Module.readImage(allImgElements[i]);
     faceDetect.faceDetectWithLog(src);
-    Module.showImage("" + i, src);
-    src.delete();
-
+    //Module.showImage("" + i, src);
     let t1 = performance.now();
+
+    src.delete();
     faceDetect.updateTotalTime(i, t1 - t0);
     totalFramesProcessed++;
   }
   totalTime = performance.now() - totalTime;
   saveLogs();
-  if (faceDetect != null && !faceDetect.isDeleted()) {
-    faceDetect.delete();
-  }
+  // //if (faceDetect != null && !faceDetect.isDeleted()) {
+  //   faceDetect.delete();
+  // }
 }
 
 const getSystemName = function () {
@@ -104,7 +106,7 @@ const saveLogs = () => {
   let metaLog = "workload,dataset,resolution,system,total_frames,"
     + "total_frames_processeds,test_total_time_ms,log_file\n";
   metaLog = metaLog + workloadName + "," + datasetName
-    + "," + resLabel + "," + system + ",0," + totalFramesProcessed
+    + "," + resLabel + "," + system + ","+totalFrames+"," + totalFramesProcessed
     + "," + totalTime + "," + reportName + ".csv";
   let metaLogData = new Blob([metaLog], {type: 'application/csv'});
   let elemB = document.createElement('a');
